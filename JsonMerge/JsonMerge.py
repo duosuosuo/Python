@@ -1,55 +1,78 @@
+#!/usr/bin/python
 import json
 import codecs
 import sys
 import os
+import shutil
 
-path = sys.path[0]
-#print path  #relative path   os.path.join(dirpath,name)
+#path = sys.path[0]  #relative path   os.path.join(dirpath,name)
+pathCopyFrom =  "/Users/Jason/ShenJing/Python/JsonMerge/CDN"
+pathCopyTo = "/Users/Jason/ShenJing/Python/JsonMerge/copyTo"
 
-'''
-#Get the relative path of json file.
-jsonFile = "E:\Shenjing\Python\Python\JsonMerge\CDN\ui\page\page.json"
-jsonData = codecs.open(jsonFile,'r','utf_8_sig')
-jsonString = jsonData.read()
-#print jsonString
-jsonString2 = json.loads(jsonString)
-#print jsonString2['Name']
-
-URL = jsonString2['RelativePath']
-#print URL 	
-jsonData.close()
-'''
-def getDocOrFile(path):
-	doc = []
+def getallFileWithAbPath(path):
+	allFileWithAbPath = []
 	for i in os.walk(path):
-		doc = doc + i[2]
-	return doc
+		for j in i[2]:
+			FileAbsolutePath = i[0] + "/" + j
+			allFileWithAbPath.append(FileAbsolutePath)
+	return allFileWithAbPath
 	
 def getRelativePath(jsonDoc):
 	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
 	jsonString = jsonData.read()
 	jsonStringPthon = json.loads(jsonString)
-	return jsonStringPthon['Name']
-	
-docOrFile = getDocOrFile(path)
-print docOrFile
+	return jsonStringPthon['RelativePath']
 
-for doc in docOrFile:
-	print type(doc)
-	'''
-	if "json" in doc:
-		Print doc
-		#getRelativePath(doc)
-		'''
+def getUnity3dFileName(jsonDoc):
+	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
+	jsonString = jsonData.read()
+	jsonStringPthon = json.loads(jsonString)
+	return jsonStringPthon['Name']
+
+def copyNewFile(fileCopyFrom,pathCopyTo,name):
+	#judge whether the file "copyto" exists.
+	if os.path.exists(pathCopyTo):
+		# Judge whether json file exists.
+		fileInCopyTo = os.listdir(pathCopyTo)
+		counter = 0
+		for oneFile in fileInCopyTo:
+			if oneFile[0:-7] == name:
+				counter = counter + 1
+		if counter == 0:
+			jpathCopyTo = pathCopyTo + "/" + name + "_1.json"
+			shutil.copy(fileCopyFrom,jpathCopyTo)
+			upathCopyTo = pathCopyTo + "/" + name + "_1.unity3d"
+			shutil.copy(fileCopyFrom,upathCopyTo)
+		elif counter != 0:
+			counter = counter + 1
+			jpathCopyTo = pathCopyTo + "/" + name + "_" + str(counter) + ".json"
+			shutil.copy(fileCopyFrom,jpathCopyTo)
+			upathCopyTo = pathCopyTo + "/" + name + "_" + str(counter) + ".unity3d"
+			shutil.copy(fileCopyFrom,upathCopyTo)
+	else:
+		os.makedirs(pathCopyTo)
+		#Copy the json file and unity3d file
+		jpathCopyTo = pathCopyTo + "/" + name + "_1.json"
+		shutil.copy(fileCopyFrom,jpathCopyTo)
+		upathCopyTo = pathCopyTo + "/" + name + "_1.unity3d"
+		shutil.copy(fileCopyFrom,upathCopyTo)
+
 	
-'''
-for docOrFile in os.walk(path):
-	#print docOrFile
-	absolutePath = docOrFile [0]
-	print absolutePath
-	doc = docOrFile[2]  #doc is "yuan zu"
-	for i in doc:
-		#print i
-		if "json" in i:
-			print "ok"  #i is the json doc
-'''
+allFileWithAbPath = getallFileWithAbPath(pathCopyFrom)
+for oneFileWithAbPath in allFileWithAbPath:
+	if "json" in oneFileWithAbPath[-4:]:
+		jsonFileRelativePath = getRelativePath(oneFileWithAbPath)
+		jsonPathCopyFrom = oneFileWithAbPath
+		jsonPathCopyTo = pathCopyTo + "/" + jsonFileRelativePath
+
+		#Get the unity3d file infor
+		unity3dFileName = getUnity3dFileName(oneFileWithAbPath)
+		unity3dFileCopyFrom = jsonPathCopyFrom[0:-4] + "unity3d"
+		unity3dFileCopyTo = jsonPathCopyTo
+		
+		#Get the file name without Suffix.
+		nameWithoutSuffix = unity3dFileName[0:-8]
+
+		copyNewFile(jsonPathCopyFrom,jsonPathCopyTo,nameWithoutSuffix)
+
+
