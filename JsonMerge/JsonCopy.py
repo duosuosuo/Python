@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import DefLib
+import os
 
 from DefLib import getallFileWithAbPath
 from DefLib import getRelativePath
@@ -20,7 +21,7 @@ for oneFileWithAbPath in allFileWithAbPath:
 	if "json" in oneFileWithAbPath[-4:]:
 		jsonFileRelativePath = getRelativePath(oneFileWithAbPath)
 		jsonPathCopyFrom = oneFileWithAbPath
-		jsonPathCopyTo = pathCopyTo + "/" + jsonFileRelativePath
+		jsonPathCopyTo = os.path.join(pathCopyTo,jsonFileRelativePath)
 
 		#Get the unity3d file infor
 		unity3dFileName = getUnity3dFileName(oneFileWithAbPath)

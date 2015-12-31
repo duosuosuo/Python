@@ -1,11 +1,14 @@
 #!/usr/bin/python
 import DefLib
+import os
 
 from DefLib import getallFileWithAbPath
 from DefLib import getRelativePath
 from DefLib import getUnity3dFileName
 from DefLib import addVersion
-
+from DefLib import getAllJsonFile
+from DefLib import JsonCounter
+from DefLib import addVersion
 '''
 #path = sys.path[0]  #relative path   os.path.join(dirpath,name)
 pathCopyFrom =  "/Users/Jason/ShenJing/Python/JsonMerge/CDN"
@@ -14,24 +17,30 @@ pathCopyTo = "/Users/Jason/ShenJing/Python/JsonMerge/copyTo"
 pathCopyFrom =  "E:\Shenjing\Python\Python\JsonMerge\CDN"
 pathCopyTo = "E:\Shenjing\Python\Python\JsonMerge\copyTo"
 
-allFileWithAbPath = getallFileWithAbPath(pathCopyTo)
 
-for oneFileWithAbPath in allFileWithAbPath:
-	if "json" in oneFileWithAbPath[-4:]:
-		print oneFileWithAbPath
+allJsonFile = getAllJsonFile(pathCopyTo)
 
-'''
-		jsonFileRelativePath = getRelativePath(oneFileWithAbPath)
-		jsonPathCopyFrom = oneFileWithAbPath
-		jsonPathCopyTo = pathCopyTo + "/" + jsonFileRelativePath
+latestJsonVersion = []
 
-		#Get the unity3d file infor
-		unity3dFileName = getUnity3dFileName(oneFileWithAbPath)
-		unity3dFileCopyFrom = jsonPathCopyFrom[0:-4] + "unity3d"
-		unity3dFileCopyTo = jsonPathCopyTo
-		
-		#Get the file name without Suffix.
-		nameWithoutSuffix = unity3dFileName[0:-8]
+for oneJsonFile in allJsonFile:
+	p,f = os.path.split(oneJsonFile)
+	if f[-7:] == "_1.json":
+		s = f[:-7]
+		counter = JsonCounter(p,s)
+		f = s + "_" + str(counter) + ".json"
+		latestVersionJsonWithPath = os.path.join(p,f)
+		addVersion(latestVersionJsonWithPath,counter)
+		latestJsonVersion.append(latestVersionJsonWithPath)
 
-		copyNewFile(jsonPathCopyFrom,jsonPathCopyTo,nameWithoutSuffix)
-'''
+JsonMergeFile = []
+for onefile in latestJsonVersion:
+	jsonData = codecs.open(onefile,'r','utf_8_sig')
+	JsonMergeFile.append(jsonData)
+print JsonMergeFile
+
+
+
+	#jsonData.close()
+
+
+
