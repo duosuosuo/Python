@@ -80,7 +80,14 @@ def getAllJsonFile(path):
 	return allJsonFile
 
 def addVersion(jsonDoc,counter):
-	versionDict = {'Version':counter}
-	jsonData = codecs.open(jsonDoc,'w','utf_8_sig')
-	jsonData.write(json.loads(versionDict))
+	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
+	jsonString = jsonData.read()
+	jsonStringPython = json.loads(jsonString)
+	jsonStringPython['Version'] = counter
+	json.dump(jsonStringPython,open(jsonDoc,'w'))
 	jsonData.close()
+	return jsonDoc
+
+def bigJson(jsonDoc):
+	pass
+	

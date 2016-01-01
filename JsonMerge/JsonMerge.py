@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import DefLib
 import os
+import codecs
+import json
 
 from DefLib import getallFileWithAbPath
 from DefLib import getRelativePath
@@ -9,14 +11,15 @@ from DefLib import addVersion
 from DefLib import getAllJsonFile
 from DefLib import JsonCounter
 from DefLib import addVersion
-'''
+
 #path = sys.path[0]  #relative path   os.path.join(dirpath,name)
 pathCopyFrom =  "/Users/Jason/ShenJing/Python/JsonMerge/CDN"
 pathCopyTo = "/Users/Jason/ShenJing/Python/JsonMerge/copyTo"
+
 '''
 pathCopyFrom =  "E:\Shenjing\Python\Python\JsonMerge\CDN"
 pathCopyTo = "E:\Shenjing\Python\Python\JsonMerge\copyTo"
-
+'''
 
 allJsonFile = getAllJsonFile(pathCopyTo)
 
@@ -30,17 +33,9 @@ for oneJsonFile in allJsonFile:
 		f = s + "_" + str(counter) + ".json"
 		latestVersionJsonWithPath = os.path.join(p,f)
 		addVersion(latestVersionJsonWithPath,counter)
-		latestJsonVersion.append(latestVersionJsonWithPath)
-
-JsonMergeFile = []
-for onefile in latestJsonVersion:
-	jsonData = codecs.open(onefile,'r','utf_8_sig')
-	JsonMergeFile.append(jsonData)
-print JsonMergeFile
 
 
-
-	#jsonData.close()
+		#latestJsonVersion.append(latestVersionJsonWithPath)
 
 
 
