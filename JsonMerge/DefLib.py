@@ -88,6 +88,46 @@ def addVersion(jsonDoc,counter):
 	jsonData.close()
 	return jsonDoc
 
-def bigJson(jsonDoc):
-	pass
+
+
+
+def bigJsonToStr(jsonDoc,strtemp):
+	#Read jsonDoc to dict to string
+	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
+	jsonString = jsonData.read()
+	jsonStringPython = json.loads(jsonString)  #to dict
+	dicToStr = str(jsonStringPython) #to string
+	
+	if strtemp == "":
+		MergeToString = dicToStr
+	else:
+		MergeToString = strtemp + "," + dicToStr
+	return MergeToString
+
+'''
+def bigJsonStr(jsonDoc,bigJsonFile):
+	#Read jsonDoc to dict to string
+	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
+	jsonString = jsonData.read()
+	jsonStringPython = json.loads(jsonString)  #to dict
+	dicToStr = str(jsonStringPython) #to string
+	#Read bigJsonFile to dict to string
+	if bigJsonFile not in sys.path[0]:
+		BigDicToStr = ""
+	else:
+		BigJsonData = codecs.open(bigJsonFile,'r','utf_8_sig')
+		BigJsonString = BigJsonData.read()
+		BigJsonStringPython = json.loads(BigJsonString)  #to dict
+		BigDicToStr = str(BigJsonStringPython) #to string
+	#Merge dicToStr and BigDicToStr
+	MergeString = dicToStr + "," + BigDicToStr
+	return MergeString
+	
+	MergeString2 = dict(MergeString)
+
+	#String to dict
+	json.dump(MergeString2,open(bigJsonFile,'w'))
+	jsonData.close()
+	return bigJsonFile
+	'''
 	
