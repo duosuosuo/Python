@@ -13,7 +13,7 @@ from DefLib import getAllJsonFile
 from DefLib import JsonCounter
 from DefLib import addVersion
 from DefLib import bigJsonToStr
-
+'''
 #path = sys.path[0]  #relative path   os.path.join(dirpath,name)
 pathCopyFrom =  "/Users/Jason/ShenJing/Python/JsonMerge/CDN"
 pathCopyTo = "/Users/Jason/ShenJing/Python/JsonMerge/copyTo"
@@ -21,7 +21,7 @@ pathCopyTo = "/Users/Jason/ShenJing/Python/JsonMerge/copyTo"
 '''
 pathCopyFrom =  "E:\Shenjing\Python\Python\JsonMerge\CDN"
 pathCopyTo = "E:\Shenjing\Python\Python\JsonMerge\copyTo"
-'''
+
 
 #Get Finally big json file with path
 allJsonFile = getAllJsonFile(pathCopyTo)
@@ -35,8 +35,8 @@ for onefile in os.listdir(bigJsonFilePath):
 bigJsonFileWithPath = os.path.join(bigJsonFilePath,bigJsonFileName)
 
 #Add version to latest version Json file.
-allLatestJsonFile = []
 strtemp = ""
+jsonStringPythonBig = {}
 for oneJsonFile in allJsonFile:
 	p,f = os.path.split(oneJsonFile)
 	if f[-7:] == "_1.json":
@@ -44,14 +44,20 @@ for oneJsonFile in allJsonFile:
 		counter = JsonCounter(p,s)
 		f = s + "_" + str(counter) + ".json"
 		latestVersionJsonWithPath = os.path.join(p,f)
-		allLatestJsonFile.append(latestVersionJsonWithPath)
 		addVersion(latestVersionJsonWithPath,counter)
+
 		
+			
+
+
+'''		
 #Merge json file
 strtemp = bigJsonToStr(latestVersionJsonWithPath,strtemp)
 bigJsonStr = "{\'Json\':[" + strtemp + "]}"
 print bigJsonStr
 bigJsonDict = dict(bigJsonStr)
+'''
+
 
 '''
 #String to dict

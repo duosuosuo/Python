@@ -88,9 +88,6 @@ def addVersion(jsonDoc,counter):
 	jsonData.close()
 	return jsonDoc
 
-
-
-
 def bigJsonToStr(jsonDoc,strtemp):
 	#Read jsonDoc to dict to string
 	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
@@ -103,6 +100,8 @@ def bigJsonToStr(jsonDoc,strtemp):
 	else:
 		MergeToString = strtemp + "," + dicToStr
 	return MergeToString
+
+
 
 '''
 def bigJsonStr(jsonDoc,bigJsonFile):
