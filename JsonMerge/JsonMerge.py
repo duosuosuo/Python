@@ -8,11 +8,12 @@ import sys
 from DefLib import getallFileWithAbPath
 from DefLib import getRelativePath
 from DefLib import getUnity3dFileName
-from DefLib import addVersion
 from DefLib import getAllJsonFile
 from DefLib import JsonCounter
-from DefLib import addVersion
-from DefLib import bigJsonToStr
+from DefLib import getAllLstJsonFile
+from DefLib import getVersion
+from DefLib import allJsonToArray
+
 '''
 #path = sys.path[0]  #relative path   os.path.join(dirpath,name)
 pathCopyFrom =  "/Users/Jason/ShenJing/Python/JsonMerge/CDN"
@@ -34,35 +35,19 @@ for onefile in os.listdir(bigJsonFilePath):
 		bigJsonFileNum = bigJsonFileNum + 1
 bigJsonFileWithPath = os.path.join(bigJsonFilePath,bigJsonFileName)
 
-#Add version to latest version Json file.
-strtemp = ""
-jsonStringPythonBig = {}
-for oneJsonFile in allJsonFile:
-	p,f = os.path.split(oneJsonFile)
-	if f[-7:] == "_1.json":
-		s = f[:-7]
-		counter = JsonCounter(p,s)
-		f = s + "_" + str(counter) + ".json"
-		latestVersionJsonWithPath = os.path.join(p,f)
-		addVersion(latestVersionJsonWithPath,counter)
-
-		
-			
 
 
-'''		
-#Merge json file
-strtemp = bigJsonToStr(latestVersionJsonWithPath,strtemp)
-bigJsonStr = "{\'Json\':[" + strtemp + "]}"
-print bigJsonStr
-bigJsonDict = dict(bigJsonStr)
-'''
+#Add version and merge to dict 
+bigJsonArray = []
+allLstVersionJsonWithPath = getAllLstJsonFile(allJsonFile)
+for oneJsonFile in allLstVersionJsonWithPath:
+	version = getVersion(oneJsonFile)
+	bigJsonArray = allJsonToArray(oneJsonFile,bigJsonArray,version)
+bigJsonDict = {}
+bigJsonDict["json"] = bigJsonArray
+bigJson = json.dumps(bigJsonDict)
 
-
-'''
-#String to dict
-json.dump(bigJsonDict,open(bigJsonFileWithPath,'w'))
-jsonData.close()
-'''
-
-
+#Create Finally big json file
+bigJsonFile = open(bigJsonFileWithPath,'w')
+bigJsonFile.write(bigJson)
+bigJsonFile.close()

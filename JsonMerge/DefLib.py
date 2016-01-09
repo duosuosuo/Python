@@ -25,6 +25,16 @@ def getUnity3dFileName(jsonDoc):
 	jsonStringPthon = json.loads(jsonString)
 	return jsonStringPthon['Name']
 
+def getVersion(jsonDocWithPath):
+	p,f = os.path.split(jsonDocWithPath)
+	jsonName = f[:-5]
+	counter = 0
+	for i in jsonName:
+		if i != "_":
+			counter = counter + 1
+	version = jsonName[counter:]
+	return version
+	
 def JsonCounter(pathCopyTo,name):
 	#Judge whether json file exists.
 	fileInCopyTo = os.listdir(pathCopyTo)
@@ -79,54 +89,24 @@ def getAllJsonFile(path):
 				allJsonFile.append(JsonFile)
 	return allJsonFile
 
-def addVersion(jsonDoc,counter):
+def getAllLstJsonFile(allJsonFile):
+	allLstVersionJsonWithPath = []
+	for oneJsonFile in allJsonFile:
+		p,f = os.path.split(oneJsonFile)
+		if f[-7:] == "_1.json":
+			s = f[:-7]
+			counter = JsonCounter(p,s) # Latest json file version
+			f = s + "_" + str(counter) + ".json"
+			lstVersionJsonWithPath = os.path.join(p,f)
+			allLstVersionJsonWithPath.append(lstVersionJsonWithPath)
+	return allLstVersionJsonWithPath
+
+def allJsonToArray(jsonDoc,bigJsonDict,version):
+	#Read jsonDoc to dict
 	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
-	jsonString = jsonData.read()
-	jsonStringPython = json.loads(jsonString)
-	jsonStringPython['Version'] = counter
-	json.dump(jsonStringPython,open(jsonDoc,'w'))
-	jsonData.close()
-	return jsonDoc
-
-def bigJsonToStr(jsonDoc,strtemp):
-	#Read jsonDoc to dict to string
-	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
-	jsonString = jsonData.read()
-	jsonStringPython = json.loads(jsonString)  #to dict
-	dicToStr = str(jsonStringPython) #to string
-	
-	if strtemp == "":
-		MergeToString = dicToStr
-	else:
-		MergeToString = strtemp + "," + dicToStr
-	return MergeToString
-
-
-
-'''
-def bigJsonStr(jsonDoc,bigJsonFile):
-	#Read jsonDoc to dict to string
-	jsonData = codecs.open(jsonDoc,'r','utf_8_sig')
-	jsonString = jsonData.read()
-	jsonStringPython = json.loads(jsonString)  #to dict
-	dicToStr = str(jsonStringPython) #to string
-	#Read bigJsonFile to dict to string
-	if bigJsonFile not in sys.path[0]:
-		BigDicToStr = ""
-	else:
-		BigJsonData = codecs.open(bigJsonFile,'r','utf_8_sig')
-		BigJsonString = BigJsonData.read()
-		BigJsonStringPython = json.loads(BigJsonString)  #to dict
-		BigDicToStr = str(BigJsonStringPython) #to string
-	#Merge dicToStr and BigDicToStr
-	MergeString = dicToStr + "," + BigDicToStr
-	return MergeString
-	
-	MergeString2 = dict(MergeString)
-
-	#String to dict
-	json.dump(MergeString2,open(bigJsonFile,'w'))
-	jsonData.close()
-	return bigJsonFile
-	'''
-	
+	jsonStr = jsonData.read()
+	jsonDict = json.loads(jsonStr)  #jsonStr to dict
+	#Add version to jsonDict and bigJsonDict
+	jsonDict["version"] = version
+	bigJsonDict.append(jsonDict)
+	return bigJsonDict
