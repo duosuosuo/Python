@@ -14,40 +14,29 @@ from DefLib import getAllLstJsonFile
 from DefLib import getVersion
 from DefLib import allJsonToArray
 
-'''
-#path = sys.path[0]  #relative path   os.path.join(dirpath,name)
-pathCopyFrom =  "/Users/Jason/ShenJing/Python/JsonMerge/CDN"
-pathCopyTo = "/Users/Jason/ShenJing/Python/JsonMerge/copyTo"
+def Merge(pathCopyTo):
+	#Get Finally big json file with path
+	allJsonFile = getAllJsonFile(pathCopyTo)
+	bigJsonFilePath = sys.path[0]
+	bigJsonFileName = "bigJsonFile_1.json"
+	bigJsonFileNum = 2
+	for onefile in os.listdir(bigJsonFilePath):
+		if bigJsonFileName == onefile:
+			bigJsonFileName = "bigJsonFile" + "_" + str(bigJsonFileNum) + ".json"
+			bigJsonFileNum = bigJsonFileNum + 1
+	bigJsonFileWithPath = os.path.join(bigJsonFilePath,bigJsonFileName)
 
-'''
-pathCopyFrom =  "E:\Shenjing\Python\Python\JsonMerge\CDN"
-pathCopyTo = "E:\Shenjing\Python\Python\JsonMerge\copyTo"
+	#Add version and merge to dict 
+	bigJsonArray = []
+	allLstVersionJsonWithPath = getAllLstJsonFile(allJsonFile)
+	for oneJsonFile in allLstVersionJsonWithPath:
+		version = getVersion(oneJsonFile)
+		bigJsonArray = allJsonToArray(oneJsonFile,bigJsonArray,version)
+	bigJsonDict = {}
+	bigJsonDict["json"] = bigJsonArray
+	bigJson = json.dumps(bigJsonDict)
 
-
-#Get Finally big json file with path
-allJsonFile = getAllJsonFile(pathCopyTo)
-bigJsonFilePath = sys.path[0]
-bigJsonFileName = "bigJsonFile_1.json"
-bigJsonFileNum = 2
-for onefile in os.listdir(bigJsonFilePath):
-	if bigJsonFileName == onefile:
-		bigJsonFileName = "bigJsonFile" + "_" + str(bigJsonFileNum) + ".json"
-		bigJsonFileNum = bigJsonFileNum + 1
-bigJsonFileWithPath = os.path.join(bigJsonFilePath,bigJsonFileName)
-
-
-
-#Add version and merge to dict 
-bigJsonArray = []
-allLstVersionJsonWithPath = getAllLstJsonFile(allJsonFile)
-for oneJsonFile in allLstVersionJsonWithPath:
-	version = getVersion(oneJsonFile)
-	bigJsonArray = allJsonToArray(oneJsonFile,bigJsonArray,version)
-bigJsonDict = {}
-bigJsonDict["json"] = bigJsonArray
-bigJson = json.dumps(bigJsonDict)
-
-#Create Finally big json file
-bigJsonFile = open(bigJsonFileWithPath,'w')
-bigJsonFile.write(bigJson)
-bigJsonFile.close()
+	#Create Finally big json file
+	bigJsonFile = open(bigJsonFileWithPath,'w')
+	bigJsonFile.write(bigJson)
+	bigJsonFile.close()
