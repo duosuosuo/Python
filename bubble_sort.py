@@ -16,17 +16,30 @@ Bubble Sort Algorithm Implementation
 """
 
 
-def bubble_sort(arr):
+from typing import List, TypeVar, MutableSequence, Callable, Optional
+
+T = TypeVar("T")
+
+
+def bubble_sort(arr: MutableSequence[T], key: Optional[Callable[[T], T]] = None) -> MutableSequence[T]:
     """
-    冒泡排序算法
-    
+    冒泡排序算法（原地排序）
+
+    本函数会对传入序列进行原地排序，并返回同一序列引用。
+    可选地接受 `key` 函数以按键值进行比较，行为与内置 `sorted` 的 `key` 类似。
+
     Args:
-        arr (list): 需要排序的列表
-        
+        arr: 需要排序的可变序列（如 list）
+        key: 可选的键函数，用于从元素中提取比较键
+
     Returns:
-        list: 排序后的列表
+        传入的同一个序列对象（已排序）
     """
     n = len(arr)
+    # 当未提供 key 时，直接使用元素自身作为比较键
+    if key is None:
+        def key(x: T) -> T:  # type: ignore[no-redef]
+            return x
     
     # 外层循环控制排序轮数
     for i in range(n):
@@ -36,8 +49,8 @@ def bubble_sort(arr):
         # 内层循环进行相邻元素比较和交换
         # 每轮后最大的元素会"冒泡"到末尾，所以范围逐渐缩小
         for j in range(0, n - i - 1):
-            # 如果前一个元素大于后一个元素，则交换
-            if arr[j] > arr[j + 1]:
+            # 如果前一个元素的键值大于后一个元素的键值，则交换
+            if key(arr[j]) > key(arr[j + 1]):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swapped = True
         
@@ -48,18 +61,22 @@ def bubble_sort(arr):
     return arr
 
 
-def bubble_sort_with_steps(arr):
+def bubble_sort_with_steps(arr: MutableSequence[T], key: Optional[Callable[[T], T]] = None) -> MutableSequence[T]:
     """
-    带步骤显示的冒泡排序算法（用于演示）
-    
+    带步骤显示的冒泡排序算法（用于演示，原地排序）
+
     Args:
-        arr (list): 需要排序的列表
-        
+        arr: 需要排序的可变序列
+        key: 可选的键函数
+
     Returns:
-        list: 排序后的列表
+        传入的同一个序列对象（已排序）
     """
     n = len(arr)
     print(f"原始数组: {arr}")
+    if key is None:
+        def key(x: T) -> T:  # type: ignore[no-redef]
+            return x
     
     for i in range(n):
         swapped = False
@@ -67,8 +84,8 @@ def bubble_sort_with_steps(arr):
         
         for j in range(0, n - i - 1):
             print(f"  比较 {arr[j]} 和 {arr[j + 1]}", end="")
-            
-            if arr[j] > arr[j + 1]:
+
+            if key(arr[j]) > key(arr[j + 1]):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swapped = True
                 print(f" -> 交换: {arr}")
@@ -83,7 +100,7 @@ def bubble_sort_with_steps(arr):
     return arr
 
 
-def test_bubble_sort():
+def test_bubble_sort() -> None:
     """测试冒泡排序算法"""
     print("=" * 50)
     print("冒泡排序算法测试")
@@ -105,6 +122,12 @@ def test_bubble_sort():
         result = bubble_sort(test_arr.copy())
         print(f"排序结果: {result}")
         print(f"是否正确: {result == sorted(test_arr)}")
+
+    # 测试 key 参数（按绝对值排序等价于 Python sorted 的 key 行为）
+    keyed_case = [-3, 1, -2, 4, 0]
+    keyed_sorted = bubble_sort(keyed_case.copy(), key=abs)
+    print(f"\n测试 key=abs: {keyed_case} -> {keyed_sorted}")
+    print(f"是否正确: {keyed_sorted == sorted(keyed_case, key=abs)}")
 
 
 if __name__ == "__main__":
